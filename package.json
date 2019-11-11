@@ -1,0 +1,21 @@
+{
+  "name": "retry",
+  "version": "1.0.0",
+  "description": "retry with new parameter",
+  "main": "retry.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "retry"
+  ],
+  "author": "neil.han@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
+}
