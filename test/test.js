@@ -19,11 +19,11 @@ describe('RetryChain', () => {
                   })
 
             const result = await chain.resolve()
-            console.log1('result:', result)
-            console.log1('log1:', global.log1)
+            console.log('result:', result)
+            console.log('log1:', global.log1)
         }catch(e) {
-            console.log1('catch() log1:', global.log1)
-            console.log1('error:', e)
+            console.log('catch() log1:', global.log1)
+            console.log('error:', e)
         }
 
         expect(global.log1).toEqual(['<1', 'good now'])
@@ -49,8 +49,6 @@ describe('RetryChain', () => {
 
             const result = await chain.resolve()
             result = await chain.resolve()
-            console.log('result:', result)
-            console.log('log2:', global.log2)
         }catch(e) {
             console.log('catch() log2:', global.log2)
             console.log('error:', e)
@@ -61,5 +59,7 @@ describe('RetryChain', () => {
                                      "received v: 1",
                                      "received v: 1",])
     })
+
+    // TODO need better coverage
 
 })

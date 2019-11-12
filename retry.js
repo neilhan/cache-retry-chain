@@ -1,7 +1,7 @@
 const {isFunction, isArray, cloneDeep, } = require('lodash/fp')
 
 class RetryChain {
-    constructor(fn, retryParams=undefined, maxRetry=1) {
+    constructor(fn, retryParams=undefined) {
         this.fn = fn
         this.paramCache = undefined
         if (! (retryParams instanceof RetryChain)
@@ -10,15 +10,10 @@ class RetryChain {
             this.paramCache = retryParams
         }
         this.retryParams = retryParams
-        this.maxRetry = maxRetry
-
-        // debugging ...
-        this.counter = global.counter
-        global.counter = global.counter + 1
     }
 
-    thenTry(fn, maxRetry=1) {
-        let longerChain = new RetryChain(fn, this, maxRetry)
+    thenTry(fn) {
+        let longerChain = new RetryChain(fn, this)
         return longerChain
     }
 
