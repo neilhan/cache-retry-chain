@@ -12,12 +12,17 @@ class RetryChain {
         this.retryParams = retryParams
     }
 
-    thenTry(fn) {
+    then(fn) {
         let longerChain = new RetryChain(fn, this)
         return longerChain
     }
 
-    async _maybeEvalParam(useArgs) {
+    catch(fn) {
+        let longerChain = new RetryChainCatch(fn, this)
+        return longerChain
+    }
+
+    async _genParam(useArgs) {
         // if it's RetryChain, resolve it
         if (isArray(useArgs) && useArgs.length === 1 && useArgs[0] instanceof RetryChain) {
             useArgs = useArgs[0]
@@ -30,22 +35,41 @@ class RetryChain {
     }
 
     async resolve() {
-        let useArgs
         try {
             // resolve this fn with paramCache
             // if no paramCache, get it from resolving retryParams, it maybe a previous chain
             if(! this.paramCache) {
-                this.paramCache = await this._maybeEvalParam(this.retryParams)
+                this.paramCache = await this._genParam(this.retryParams)
             }
 
             return await this.fn.apply(global, [this.paramCache])
         } catch(e) {
-            this.paramCache = await this._maybeEvalParam(this.retryParams)
+            this.paramCache = await this._genParam(this.retryParams)
 
-            return await this.fn.apply(global, [useArgs])
+            return await this.fn.apply(global, [this.paramCache])
         }
 
         return undefined
+    }
+}
+
+class RetryChainCatch extends RetryChain {
+    constructor(fn, chain) {
+        super((p) => p, chain)
+        this.catchFn = fn
+    }
+
+    async resolve() {
+        try {
+            return await super.resolve()
+        } catch(e) {
+            this.paramCache = await this.catchFn(err)
+
+            return await this.fn.apply(global, [this.paramCache])
+        }
+
+        return undefined
+
     }
 }
 

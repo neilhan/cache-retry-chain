@@ -62,4 +62,20 @@ describe('RetryChain', () => {
 
     // TODO need better coverage
 
+    // catch related
+    test('catch works', async () => {
+        const chain =
+              new RetryChain((p) => {
+                  return p+1
+              }, 1)
+              .then((p) => {
+                  // fail
+                  throw new Error('fail to test catch')
+              })
+              .catch(e => 'value when exception')
+        const result = chain.resolve()
+
+        expect(result).toEqual('value when exception')
+    })
+
 })
