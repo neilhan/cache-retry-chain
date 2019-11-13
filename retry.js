@@ -63,7 +63,7 @@ class RetryChainCatch extends RetryChain {
         try {
             return await super.resolve()
         } catch(e) {
-            this.paramCache = await this.catchFn(err)
+            this.paramCache = await this.catchFn(e)
 
             return await this.fn.apply(global, [this.paramCache])
         }

@@ -42,12 +42,12 @@ describe('RetryChain', () => {
                       }
                       global.log2.push('good now')
                       return global.counter2
-                  }).thenTry((v1) => {
+                  }).then((v1) => {
                       global.log2.push(`received v: ${v1}`)
                       return v1
                   })
 
-            const result = await chain.resolve()
+            let result = await chain.resolve()
             result = await chain.resolve()
         }catch(e) {
             console.log('catch() log2:', global.log2)
@@ -73,9 +73,40 @@ describe('RetryChain', () => {
                   throw new Error('fail to test catch')
               })
               .catch(e => 'value when exception')
-        const result = chain.resolve()
+        const result = await chain.resolve()
 
         expect(result).toEqual('value when exception')
+    })
+
+    test('catch has no effects when all fn worked', async () => {
+        const chain =
+              new RetryChain((p) => {
+                  return p+1
+              }, 1)
+              .then((p) => {
+                  return p+1
+              })
+              .catch(e => 'value when exception')
+        const result = await chain.resolve()
+
+        expect(result).toEqual(3)
+    })
+
+    test('catch fixing in the middle of the chain', async () => {
+        const chain =
+              new RetryChain((p) => {
+                  return p+1
+              }, 1)
+              .then((p) => {
+                  throw new Error('always fail')
+              })
+              .catch((e)=>{return 0})
+              .then((p) => {
+                  return p+1
+              })
+        const result = await chain.resolve()
+
+        expect(result).toEqual(1)
     })
 
 })
