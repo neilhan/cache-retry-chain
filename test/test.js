@@ -60,7 +60,34 @@ describe('RetryChain', () => {
                                      "received v: 1",])
     })
 
-    // TODO need better coverage
+    // failure case, without catch related
+    test('catch works', async (done) => {
+        const chain =
+              new RetryChain( p => {
+                  return p+1
+              }, 1)
+              .then( p => {
+                  // fail
+                  throw new Error('can not fix the issue')
+              })
+              .then( p => {
+                  return p+1
+              })
+        try {
+            const result = await chain.resolve()
+        } catch(e) {
+            // console.log('e:', e)
+        }
+
+        try {
+            const result = await chain.resolve()
+            done.fail('should have tried to resolve and fail')
+        } catch(e) {
+            // console.log('e:', e)
+            expect('Error: can not fix the issue').toEqual(e.toString())
+            done()
+        }
+    })
 
     // catch related
     test('catch works', async () => {
