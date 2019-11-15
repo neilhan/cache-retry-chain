@@ -61,3 +61,5 @@ async function twoStepsLogin() => {
               return await chain.resolve()
 ```
 The code above shows when getLoginStep1Token() failed to provide 't' for exxchangeToken1ToToken2(), catch the exception and return t_whenError.
+
+2019 11 14
