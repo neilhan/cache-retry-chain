@@ -49,8 +49,8 @@ When getLoginStep1Token() fails and throws an exception, step-2 can operate with
 ```javascript
 async function twoStepsLogin() => {
         const chain =
-              new RetryChain(async (uid, pwd) => {  // don't have to async function
-                  return await getLoginStep1Token(uid, pwd)  // don't have to async function
+              new RetryChain(async (uid, pwd) => {  // can be async function
+                  return await getLoginStep1Token(uid, pwd)
               }, [userId, password])
               .catch( e => {
                   return t_whenError
@@ -60,6 +60,7 @@ async function twoStepsLogin() => {
               })
               return await chain.resolve()
 ```
-The code above shows when getLoginStep1Token() failed to provide 't' for exxchangeToken1ToToken2(), catch the exception and return t_whenError.
+The code above shows when getLoginStep1Token() failed to provide 't' for exxchangeToken1ToToken2(),
+catch the exception and return t_whenError.
 
 2019 11 14
